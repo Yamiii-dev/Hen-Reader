@@ -1,16 +1,11 @@
-# hen_reader
+# Hen Reader
 
-A new Flutter project.
+Cross-platform reader app for multiple Hentai sources.
 
-## Getting Started
+## Currently supports
+- Rule34.xxx
+- E-hentai
 
-This project is a starting point for a Flutter application.
+Custom source plugin support planned in the future
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+![Screenshot of the app](/screenshots/1.png)
