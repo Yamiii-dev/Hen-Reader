@@ -22,6 +22,10 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: .fromSeed(seedColor: SystemTheme.accentColor.accent),
       ),
+      darkTheme: ThemeData(
+        colorScheme: .fromSeed(seedColor: SystemTheme.accentColor.accent, brightness: Brightness.dark),
+      ),
+      themeMode: ThemeMode.system,
       home: ResultsPage()
     );
   }

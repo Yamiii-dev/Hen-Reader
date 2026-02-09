@@ -127,8 +127,8 @@ class ResultsPageState extends State<ResultsPage> {
               posts.isNotEmpty
                   ? Expanded(
                       child: GridView.builder(
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 3,
+                        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                          maxCrossAxisExtent: 350.0,
                         ),
                         itemBuilder: (context, index) {
                           return GestureDetector(

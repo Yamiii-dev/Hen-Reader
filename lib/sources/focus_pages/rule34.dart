@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:hen_reader/sources/rule34.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:video_player/video_player.dart';
 
 class FocusPageR34 extends StatefulWidget {
   final PostR34 post;
@@ -13,6 +14,26 @@ class FocusPageR34 extends StatefulWidget {
 
 class FocusPageR34State extends State<FocusPageR34> {
   bool isLoading = false;
+
+  late VideoPlayerController vpController;
+
+  @override
+  void initState() {
+    super.initState();
+
+    vpController = VideoPlayerController.networkUrl(Uri.parse(widget.post.fileUrl));
+    vpController.initialize();
+    vpController.addListener(() {setState(() {});});
+    vpController.play();
+    debugPrint(widget.post.fileUrl);
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    vpController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +61,7 @@ class FocusPageR34State extends State<FocusPageR34> {
           },)
           ],),
           Expanded(
-            child: Image.network(widget.post.fileUrl, fit: BoxFit.contain,),
+            child: widget.post.fileUrl.endsWith(".mp4") ? VP() : Image.network(widget.post.fileUrl, fit: BoxFit.contain,),
           ),
           /*Row(children: [
             IconButton(onPressed: () {}, icon: Icon(Icons.navigate_before)),
@@ -51,5 +72,19 @@ class FocusPageR34State extends State<FocusPageR34> {
       ),
       )
     );
+  }
+
+  Widget VP(){
+    return vpController.value.isInitialized 
+    ?GestureDetector(onTap: () {
+          if(vpController.value.isPlaying) vpController.pause();
+          else vpController.play();
+        },
+        child: Stack( children: [
+      Center(
+        child: AspectRatio(aspectRatio: vpController.value.aspectRatio, 
+          child: VideoPlayer(vpController))),
+      vpController.value.isPlaying ? Container() : Center(child: Icon(Icons.play_arrow, size: 350,))
+    ])) : CircularProgressIndicator();
   }
 }
