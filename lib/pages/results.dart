@@ -1,4 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:hen_reader/plugin/plugins.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:archive/archive.dart';
+import 'package:path_provider/path_provider.dart';
 
 import "package:hen_reader/classes/post.dart";
 import 'package:hen_reader/pages/settings.dart';
@@ -13,7 +19,7 @@ class ResultsPage extends StatefulWidget {
   State<StatefulWidget> createState() => ResultsPageState();
 }
 
-enum Source { rule34, ehentai }
+enum Source { rule34, ehentai, plugin }
 
 class ResultsPageState extends State<ResultsPage> {
   late ScrollController gridControl;
@@ -23,6 +29,9 @@ class ResultsPageState extends State<ResultsPage> {
     super.initState();
     gridControl = ScrollController(initialScrollOffset: 5.0)
       ..addListener(gridListener);
+    plugins.init().then((_) async {
+      setState(() => {});
+    });
   }
 
   String searchQuery = "";
@@ -38,12 +47,21 @@ class ResultsPageState extends State<ResultsPage> {
 
   bool isLoading = false;
 
+  Plugins plugins = Plugins();
+
   void addPostsToList() async {
     List<Post> result = List.empty();
     if (currentSource == Source.rule34)
       result = await r32API.GetPosts(searchQuery, currentPage);
     else if (currentSource == Source.ehentai)
       result = await ehentai.GetMorePosts(searchQuery);
+    else if (currentSource == Source.plugin) {
+      if (plugins.plugins.isNotEmpty) {
+        result = await plugins.Search(searchQuery, currentPage);
+      } else {
+        debugPrint("error, no plugins.");
+      }
+    }
     currentPage++;
     setState(() {
       posts.addAll(result);
@@ -60,6 +78,13 @@ class ResultsPageState extends State<ResultsPage> {
       result = await r32API.GetPosts(searchQuery, currentPage);
     else if (currentSource == Source.ehentai)
       result = await ehentai.GetPosts(searchQuery);
+    else if (currentSource == Source.plugin) {
+      if (plugins.plugins.isNotEmpty) {
+        result = await plugins.Search(searchQuery, currentPage);
+      } else {
+        debugPrint("error, no plugins.");
+      }
+    }
     currentPage++;
     setState(() {
       posts = result;
@@ -114,9 +139,61 @@ class ResultsPageState extends State<ResultsPage> {
               },
               child: Text("E-Hentai"),
             ),
+            if (plugins.initialized)
+              for (final (index, plugin) in plugins.plugins.indexed)
+                TextButton(
+                  onPressed: () {
+                    currentSource = Source.plugin;
+                    plugins.currentPlugin = index.toInt();
+                    search();
+                    Navigator.pop(context);
+                  },
+                  child: Text(plugin.name),
+                ),
             Divider(),
-            TextButton.icon(onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage()));}, label: Text("Settings"), icon: Icon(Icons.settings))
+            TextButton.icon(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SettingsPage()),
+                );
+              },
+              label: Text("Settings"),
+              icon: Icon(Icons.settings),
+            ),
+            TextButton.icon(
+              onPressed: () async {
+                FilePickerResult? result = await FilePicker.platform
+                    .pickFiles();
 
+                if (result != null) {
+                  if (result.names.single!.endsWith(".zip")) {
+                    File file = File(result.files.single.path!);
+                    final bytes = await file.readAsBytes();
+                    final archive = ZipDecoder().decodeBytes(bytes);
+                    for (final entry in archive) {
+                      if (entry.isFile) {
+                        final fileBytes = entry.readBytes()?.toList();
+                        if (fileBytes != null) {
+                          final appDir =
+                              await getApplicationDocumentsDirectory();
+                          File(
+                              "${appDir.path}/hen_reader/plugins/${entry.name}",
+                            )
+                            ..createSync(recursive: true)
+                            ..writeAsBytesSync(fileBytes);
+                        }
+                      }
+                    }
+
+                    await plugins.init();
+                    setState(() {});
+                  }
+                }
+              },
+              label: Text("Import Plugin"),
+              icon: Icon(Icons.import_export),
+            ),
           ],
         ),
       ),
@@ -161,11 +238,11 @@ class ResultsPageState extends State<ResultsPage> {
             ],
           ),
 
-          if(isLoading)
+          if (isLoading)
             Container(
               color: Colors.black54,
-              child: Center(child: CircularProgressIndicator(),)
-            )
+              child: Center(child: CircularProgressIndicator()),
+            ),
         ],
       ),
     );

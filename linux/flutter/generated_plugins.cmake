@@ -3,6 +3,7 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+  flutter_js
   fvp
   system_theme
   url_launcher_linux
