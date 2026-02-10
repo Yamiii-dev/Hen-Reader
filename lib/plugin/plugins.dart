@@ -16,7 +16,8 @@ class Plugin {
   final JavascriptRuntime runtime = getJavascriptRuntime();
   final String name;
   final dynamic focusUI;
-  Plugin({required this.name, required this.focusUI});
+  final String folderName;
+  Plugin({required this.name, required this.focusUI, required this.folderName});
 
   void dispose() {
     runtime.dispose();
@@ -61,6 +62,7 @@ class Plugins {
           Plugin plugin = Plugin(
             name: name,
             focusUI: uiYaml,
+            folderName: (script as Directory).path.split("/").last
           );
           if(metaJson["settings"] != null){
             List<String> settings = prefs.getStringList("PluginSettings") ?? [];

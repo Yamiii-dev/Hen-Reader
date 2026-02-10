@@ -141,14 +141,32 @@ class ResultsPageState extends State<ResultsPage> {
             ),
             if (plugins.initialized)
               for (final (index, plugin) in plugins.plugins.indexed)
-                TextButton(
-                  onPressed: () {
-                    currentSource = Source.plugin;
-                    plugins.currentPlugin = index.toInt();
-                    search();
-                    Navigator.pop(context);
-                  },
-                  child: Text(plugin.name),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextButton(
+                        onPressed: () {
+                          currentSource = Source.plugin;
+                          plugins.currentPlugin = index.toInt();
+                          search();
+                          Navigator.pop(context);
+                        },
+                        child: Text(plugin.name),
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () async {
+                        final appDir = await getApplicationDocumentsDirectory();
+                        Directory pluginFolder = Directory(
+                          "${appDir.path}/hen_reader/plugins/${plugin.folderName}",
+                        );
+                        await pluginFolder.delete(recursive: true);
+                        plugins.init();
+                        setState(() {});
+                      },
+                      icon: Icon(Icons.remove_circle),
+                    ),
+                  ],
                 ),
             Divider(),
             TextButton.icon(
