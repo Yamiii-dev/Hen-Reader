@@ -1,4 +1,4 @@
-name: Flutter Build
+name: Build Hen Reader
 
 on:
   push:
@@ -7,40 +7,74 @@ on:
   pull_request:
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        platform: [windows, linux, android]
-
+  # Windows build
+  build-windows:
+    runs-on: windows-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v3
 
       - name: Set up Flutter
         uses: flutter-actions/setup-flutter@v2
         with:
-          flutter-version: 3.38.9
+          flutter-version: 3.13.6
 
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Build for platform
-        run: |
-          if [ "${{ matrix.platform }}" == "windows" ]; then
-            flutter build windows --release
-          elif [ "${{ matrix.platform }}" == "linux" ]; then
-            flutter build linux --release
-          elif [ "${{ matrix.platform }}" == "android" ]; then
-            flutter build apk --release
-          fi
+      - name: Build Windows app
+        run: flutter build windows --release
 
-      - name: Upload Artifacts
+      - name: Upload Windows build
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.platform }}-build
-          path: |
-            build/windows/runner/Release/
-            build/linux/x64/release/bundle/
-            build/app/outputs/flutter-apk/app-release.apk
+          name: Windows-Build
+          path: build/windows/runner/Release/
+
+  # Linux build
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Flutter
+        uses: flutter-actions/setup-flutter@v2
+        with:
+          flutter-version: 3.13.6
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build Linux app
+        run: flutter build linux --release
+
+      - name: Upload Linux build
+        uses: actions/upload-artifact@v4
+        with:
+          name: Linux-Build
+          path: build/linux/x64/release/bundle/
+
+  # Android build
+  build-android:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Flutter
+        uses: flutter-actions/setup-flutter@v2
+        with:
+          flutter-version: 3.13.6
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build Android APK
+        run: flutter build apk --release
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Android-APK
+          path: build/app/outputs/flutter-apk/app-release.apk
