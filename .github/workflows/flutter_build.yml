@@ -17,7 +17,7 @@ jobs:
       - name: Set up Flutter
         uses: flutter-actions/setup-flutter@v2
         with:
-          version: 3.13.6
+          channel: stable
 
       - name: Install dependencies
         run: flutter pub get
@@ -41,7 +41,7 @@ jobs:
       - name: Set up Flutter
         uses: flutter-actions/setup-flutter@v2
         with:
-          version: 3.13.6
+          channel: stable
 
       - name: Install dependencies
         run: flutter pub get
@@ -68,7 +68,7 @@ jobs:
       - name: Set up Flutter
         uses: flutter-actions/setup-flutter@v2
         with:
-          version: 3.13.6
+          channel: stable
 
       - name: Install dependencies
         run: flutter pub get
