@@ -13,7 +13,18 @@ This app contains adult content intended for users 18 years and older. By using 
 - E-hentai
 - Custom source plugins (see `example_plugins` for guidance; official plugin documentation is not available yet)
 
-## Getting Started
+## Download
+
+Stable releases are not available yet.  
+Work-in-progress builds are automatically generated for every commit via GitHub Actions.  
+
+You can find and download the latest builds from the workflow artifacts here: 
+
+[Hen Reader Builds](https://github.com/Yamiii-dev/Hen-Reader/actions/workflows/flutter_build.yml?query=is%3Asuccess)
+
+⚠️ Since these are work-in-progress, bugs and/or incomplete features may appear. Use at your own discretion.
+
+## Building
 
 To build and run the application from the source, you will need to have the Flutter SDK installed.
 
