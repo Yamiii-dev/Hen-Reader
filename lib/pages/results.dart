@@ -10,7 +10,6 @@ import "package:hen_reader/classes/post.dart";
 import 'package:hen_reader/pages/settings.dart';
 import 'package:hen_reader/sources/e-hentai.dart';
 import 'package:hen_reader/sources/rule34.dart';
-import 'package:system_theme/system_theme.dart';
 
 class ResultsPage extends StatefulWidget {
   const ResultsPage({super.key});
@@ -96,7 +95,7 @@ class ResultsPageState extends State<ResultsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: SystemTheme.accentColor.accent,
+        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
         actions: [
           IconButton(
             onPressed: () async {

@@ -5,7 +5,6 @@ import 'package:hen_reader/classes/post.dart';
 import 'package:hen_reader/sources/focus_pages/rule34.dart';
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class Rule34 {
   Future<List<PostR34>> GetPosts(String searchQuery, int page) async {
@@ -15,8 +14,7 @@ class Rule34 {
     String tagsEdited = searchQuery.replaceAll(" ", "+");
 
     Uri requestPath = Uri.parse(
-      "https://api.rule34.xxx/index.php?page=dapi&s=post&q=index&limit=50&tags=$tagsEdited&pid=$page&json=1" +
-          (prefs.getString("Rule34API") ?? ""),
+      "https://api.rule34.xxx/index.php?page=dapi&s=post&q=index&limit=50&tags=$tagsEdited&pid=$page&json=1${prefs.getString("Rule34API") ?? ""}",
     );
 
     Response res = await get(requestPath);

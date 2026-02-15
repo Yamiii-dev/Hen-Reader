@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_js/extensions/fetch.dart';
 import 'package:flutter_js/flutter_js.dart';
 import 'package:flutter_js/javascript_runtime.dart';
 import 'package:hen_reader/classes/post.dart';
@@ -49,9 +48,9 @@ class Plugins {
     if (scripts.isNotEmpty) {
       for (var script in scripts) {
         if (script is Directory) {
-          File code = File((script as Directory).path + "/main.js");
-          File meta = File((script as Directory).path + "/meta.json");
-          File ui = File((script as Directory).path + "/ui.yaml");
+          File code = File("${(script).path}/main.js");
+          File meta = File("${(script).path}/meta.json");
+          File ui = File("${(script).path}/ui.yaml");
 
           Map<String, dynamic> metaJson = json.decode(meta.readAsStringSync());
 
@@ -62,13 +61,13 @@ class Plugins {
           Plugin plugin = Plugin(
             name: name,
             focusUI: uiYaml,
-            folderName: (script as Directory).path.split("/").last
+            folderName: (script).path.split("/").last
           );
           if(metaJson["settings"] != null){
             List<String> settings = prefs.getStringList("PluginSettings") ?? [];
             Map<String, dynamic> settingsJson = metaJson["settings"] as Map<String, dynamic>;
             for(var setting in settingsJson.keys){
-              settings.add(setting + "\u0001" + name);
+              settings.add("$setting\u0001$name");
             }
             prefs.setStringList("PluginSettings", settings);
           }
@@ -83,7 +82,7 @@ class Plugins {
           });
           plugin.runtime.onMessage("getSetting", (dynamic message) async{
             final key = message[0] as String;
-            final value = prefs.getString(key + "\u0001" + name);
+            final value = prefs.getString("$key\u0001$name");
             return value;
           });
           plugin.runtime.evaluate("""

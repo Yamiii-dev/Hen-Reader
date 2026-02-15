@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:hen_reader/sources/e-hentai.dart';
-import 'package:hen_reader/sources/rule34.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class FocusPageEhentai extends StatefulWidget {

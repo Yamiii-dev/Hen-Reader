@@ -1,11 +1,7 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_js/flutter_js.dart';
-import 'package:flutter_js/javascript_runtime.dart';
 import 'package:fvp/fvp.dart' as fvp;
 import 'package:system_theme/system_theme.dart';
+import 'dart:io' show Platform;
 
 import "pages/results.dart";
 
@@ -25,13 +21,18 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: .fromSeed(seedColor: SystemTheme.accentColor.accent),
-      ),
-      darkTheme: ThemeData(
-        colorScheme: .fromSeed(seedColor: SystemTheme.accentColor.accent, brightness: Brightness.dark),
-      ),
       themeMode: ThemeMode.system,
+      
+      theme: Platform.isAndroid ? ThemeData.light(
+        useMaterial3: true
+      ) : ThemeData(
+        colorScheme: .fromSeed(seedColor: SystemTheme.accentColor.accent, brightness: Brightness.light)
+      ),
+      darkTheme: Platform.isAndroid ? ThemeData.dark(
+        useMaterial3: true
+      ) : ThemeData(
+        colorScheme: .fromSeed(seedColor: SystemTheme.accentColor.accent, brightness: Brightness.dark)
+      ),
       home: ResultsPage()
     );
   }
